@@ -1,8 +1,10 @@
+@(addProductForm: Form[models.Product],user: models.users.User)
+
 @import helper._
 
-@(addProductForm: Form[models.Product])
 
-@main("addproduct"){
+
+@main("addproduct",user){
 <h3> add a new product</h3>
 
 

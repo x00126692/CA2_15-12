@@ -1,8 +1,8 @@
-@(loginForm: Form[models.users.Login])
+@(loginForm: Form[models.users.Login],user: models.users.User))
 @import helper._
 
 @* Pass page title and content {html between braces} to the main view *@
-@main("Login"){
+@main("Login",user){
 	<!-- HTML content for the index -->
 	<div class="col-xs-4">
 	<h3>Sign In</h3>

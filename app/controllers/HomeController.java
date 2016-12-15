@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import views.html.*;
 
 import models.*;
+import models.users.*;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -25,42 +26,45 @@ public class HomeController extends Controller {
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
+
+private User getUserFromSession() {
+	  return User.getUserById(session().get("email"));
+}
 public Result index() {
-	return ok(index.render());
+	return ok(index.render(getUserFromSession()));
 }
 
 public Result divisions() {
-	return ok(divisions.render());
+	return ok(divisions.render(getUserFromSession()));
 }
 
 public Result events() {
-	return ok(events.render());
+	return ok(events.render(getUserFromSession()));
 }
 
 public Result gallery() {
-	return ok(gallery.render());
+	return ok(gallery.render(getUserFromSession()));
 }
 
 
 public Result news() {
-	return ok(news.render());
+	return ok(news.render(getUserFromSession()));
 }
 
 public Result ranking() {
-	return ok(ranking.render());
+	return ok(ranking.render(getUserFromSession()));
 }
 
 public Result products() {
         List<Product> productsList = Product.findAll();
 
-	return ok(products.render(productsList));
+	return ok(products.render(productsList,getUserFromSession()));
 }
 
 public Result addproduct() {
         Form<Product> addProductForm = formFactory.form(Product.class);
-        return ok(addproduct.render(addProductForm));
+        return ok(addproduct.render(addProductForm,getUserFromSession()));
 }
-
 
 private FormFactory formFactory;
 
@@ -73,7 +77,7 @@ public Result addproductsubmit(){
 Form<Product> newProductForm = formFactory.form(Product.class).bindFromRequest();
 
 if(newProductForm.hasErrors()){
-return badRequest(addproduct.render(newProductForm));
+return badRequest(addproduct.render(newProductForm,getUserFromSession()));
 	}
 
 Product p = newProductForm.get();
@@ -91,7 +95,7 @@ return redirect(controllers.routes.HomeController.products());
 
 }
 
-
+@Security.Authenticated(Secured.class)
 @Transactional
 public Result updateProduct(Long id) {
 
@@ -107,10 +111,11 @@ try {
      return badRequest("error");
 }
 
-return ok(addproduct.render(productForm));
+return ok(addproduct.render(productForm,getUserFromSession()));
 
 }
-
+@Security.Authenticated(Secured.class)
+@Transactional
 public Result deleteProduct(Long id){
 Product.find.ref(id).delete();
 flash("success", "Product has been deleted");

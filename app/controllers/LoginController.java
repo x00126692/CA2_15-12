@@ -16,8 +16,12 @@ import models.users.*;
 public class LoginController extends Controller{
 
 private FormFactory formFactory;
+
 private Environment env;
 
+private User getUserFromSession() {
+	  return User.getUserById(session().get("email"));
+}
 @Inject
 public LoginController(Environment e, FormFactory f){
 this.env = e;
@@ -27,13 +31,15 @@ this.formFactory = f;
 public Result login(){
 Form<Login> loginForm = formFactory.form(Login.class);
 
-return ok(login.render(loginForm));
+return ok(login.render(loginForm,getUserFromSession()));
 }
+
+
 public Result loginSubmit(){
 Form<Login> loginForm = formFactory.form(Login.class).bindFromRequest();
 
 if(loginForm.hasErrors()){
-return badRequest(login.render(loginForm));
+return badRequest(login.render(loginForm,getUserFromSession()));
 }
 else{
 session().clear();
@@ -42,16 +48,13 @@ session("email", loginForm.get().getEmail());
 }
 return redirect(controllers.routes.HomeController.index());
 }
-public Result LoginSubmit(){
-Form<Login> loginForm = formFactory.form(Login.class).bindFromRequest();
 
-if(loginForm.hasErrors()){
-return badRequest(login.render(loginForm));
-}
-else{
+public Result logout(){
+
 session().clear();
-session("email", loginForm.get().getEmail());
+flash("success", "you've been logged out");
+return redirect(routes.LoginController.login());
 }
-return redirect(controllers.routes.HomeController.index());
-}
+
+
 }

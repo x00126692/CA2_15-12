@@ -1,6 +1,6 @@
 package models.users;
 
-public class Login{
+public class Login {
 
 private String email;
 private String password;

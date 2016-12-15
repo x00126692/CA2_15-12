@@ -3,13 +3,14 @@ package models.users;
 import java.util.*;
 import javax.persistence.*;
 
+import com.avaje.ebean.Model;
 import play.data.format.*;
 import play.data.validation.*;
 
-import com.avaje.ebean.*;
+
 
 @Entity
-public class User extends Model{
+public class User extends Model {
 @Id
 private String email;
 
@@ -23,16 +24,18 @@ private String name;
 private String password;
 
 public User(){
+
+
 }
 
-public static Finder<String,User> find = new  Finder<String,User>(User.class);
+public static Finder<String,User> find = new Finder<String,User>(User.class);
 
 public static List<User> findAll(){
 return User.find.all();
 }
 
 public static User authenticate(String email,String password){
-return find.where().eq("email", email).eq("password", password) .findUnique();
+return find.where().eq("email", email).eq("password", password).findUnique();
 }
 
 public String getEmail(){
@@ -59,5 +62,11 @@ return password;
 public void setPassword(String password){
 this.password = password;
 }
+	public static User getUserById(String id) {
 
+	if(id == null)
+	return null;
+	else
+	return find.byId(id);
+}
 }
